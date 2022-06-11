@@ -3,6 +3,7 @@ from tkinter import *
 # ttk module stands for "Themed Tkinter". Designed to give widgets  a better and more modern look
 from tkinter import ttk
 from time import strftime
+import datetime
 
 root = Tk()
 root.title('Clock')
@@ -21,21 +22,18 @@ tabs.add(stopwatch_tab, text='Stopwatch')
 tabs.add(alarm_tab, text='Alarm')
 tabs.add(international_time_tab, text='International time')
 
-
-# A way to create a menu
-'''
-menubar  = Menu(root)
-root.config(menu=menubar)
-menubar.add_command(label='Timer', command=lambda: print("Your time's up"))
-menubar.add_command(label='Stopwatch', command=lambda: print("The clock's ticking"))
-'''
 def time():
-    string = strftime('%H:%M:%S')
-    clock.config(text = string)
-    clock.after(1000, time)
+    time_str = datetime.datetime.now().strftime("%H:%M:%S")
+    date_str = datetime.datetime.now().strftime("%d.%m.%Y")
+    time_label.config(text = time_str)
+    time_label.after(1000, time)
+    date_label.config(text = date_str)
+    date_label.after(1000, time)
 
-clock = Label(root,font = ('calibri', 40))
-clock.pack()
+time_label = Label(root,font = ('calibri', 20))
+time_label.pack()
+date_label = Label(root,font = ('calibri', 15))
+date_label.pack()
 
 exit_btn = ttk.Button(
     root,
