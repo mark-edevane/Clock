@@ -5,6 +5,11 @@ from tkinter import *
 from time import strftime
 import datetime
 
+try:
+        import winsound #windows
+except:
+        import os #other
+
 root = Tk()
 root.title('Clock')
 
@@ -39,15 +44,15 @@ def time_func():
 
 
 # Alarm function
-# def alarm_func():
-
 
 # Alarm components
-alarm_time = Entry(alarm_tab, font = 'calibri 15')
-alarm_time.pack()
+alarm_time_entry = Entry(alarm_tab, font = 'calibri 15')
+alarm_time_entry.pack()
 alarm_instructions = Label(alarm_tab, font = 'calibri 10', text = 'Enter alarm time. E.g. 15:55')
 alarm_instructions.pack()
-alarm_button = Button(alarm_tab, text = 'Set alarm'''', command = alarm_func''')
+alarm_button = Button(alarm_tab, text = 'Set alarm',
+#command = alarm_func
+)
 alarm_button.pack()
 alarm_status = Label(alarm_tab, font = 'calibri 10', text = 'Here will be something')
 alarm_status.pack()
