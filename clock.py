@@ -1,9 +1,8 @@
-# ttk module stands for "Themed Tkinter". Designed to give widgets a better and more modern look
 from tkinter import ttk
-
 from tkinter import *
 from time import strftime
 import datetime
+import platform
 
 try:
         import winsound #windows
@@ -44,18 +43,45 @@ def time_func():
 
 
 # Alarm function
+def alarm():
+        main_time = datetime.datetime.now().strftime("%H:%M %p")
+        alarm_time = get_alarm_time_entry.get()
+        alarm_time1,alarm_time2 = alarm_time.split(' ')
+        alarm_hour, alarm_minutes = alarm_time1.split(':')
+        main_time1,main_time2 = main_time.split(' ')
+        main_hour1, main_minutes = main_time1.split(':')
+        if int(main_hour1) > 12 and int(main_hour1) < 24:
+                main_hour = str(int(main_hour1) - 12)
+        else:
+                main_hour = main_hour1
+        if int(alarm_hour) == int(main_hour) and int(alarm_minutes) == int(main_minutes) and main_time2 == alarm_time2:
+                for i in range(3):
+                        alarm_status_label.config(text='Time Is Up')
+                        if platform.system() == 'Windows':
+                                winsound.Beep(5000,1000)
+                        elif platform.system() == 'Darwin':
+                                os.system('say Time is Up')
+                        elif platform.system() == 'Linux':
+                                os.system('beep -f 5000')
+                get_alarm_time_entry.config(state='enabled')
+                set_alarm_button.config(state='enabled')
+                get_alarm_time_entry.delete(0,END)
+                alarm_status_label.config(text = '')
+        else:
+                alarm_status_label.config(text='Alarm Has Started')
+                get_alarm_time_entry.config(state='disabled')
+                set_alarm_button.config(state='disabled')
+        alarm_status_label.after(1000, alarm)
 
 # Alarm components
-alarm_time_entry = Entry(alarm_tab, font = 'calibri 15')
-alarm_time_entry.pack()
+get_alarm_time_entry = Entry(alarm_tab, font = 'calibri 15')
+get_alarm_time_entry.pack()
 alarm_instructions = Label(alarm_tab, font = 'calibri 10', text = 'Enter alarm time. E.g. 15:55')
 alarm_instructions.pack()
-alarm_button = Button(alarm_tab, text = 'Set alarm',
-#command = alarm_func
-)
-alarm_button.pack()
-alarm_status = Label(alarm_tab, font = 'calibri 10', text = 'Here will be something')
-alarm_status.pack()
+set_alarm_button = Button(alarm_tab, text = 'Set alarm',command = alarm)
+set_alarm_button.pack()
+alarm_status_label = Label(alarm_tab, font = 'calibri 10', text = '')
+alarm_status_label.pack()
 
 
 # Exit button
