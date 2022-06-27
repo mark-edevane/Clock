@@ -1,6 +1,6 @@
 from tkinter import ttk
 from tkinter import *
-from time import strftime
+import time
 import datetime
 
 root = Tk()
@@ -15,16 +15,16 @@ alarm_tab = ttk.Frame(tabs)
 timer_tab = ttk.Frame(tabs)
 stopwatch_tab = ttk.Frame(tabs)
 
+tabs.add(stopwatch_tab, text='Stopwatch')
 tabs.add(alarm_tab, text='Alarm')
 tabs.add(clock_tab, text='Clock')
 tabs.add(timer_tab, text='Timer')
-tabs.add(stopwatch_tab, text='Stopwatch')
 
 
 # Clock components
-time_label = Label(root, font = ('calibri', 20))
+time_label = Label(clock_tab, font = ('calibri', 20))
 time_label.pack()
-date_label = Label(root, font = ('calibri', 10))
+date_label = Label(clock_tab, font = ('calibri', 10))
 date_label.pack()
 
 # Time function
@@ -74,6 +74,29 @@ set_alarm_button = Button(alarm_tab, text = 'Set alarm', command=lambda: [on_sta
 set_alarm_button.pack()
 alarm_status_label = Label(alarm_tab, font = 'calibri 10', text = '')
 alarm_status_label.pack()
+
+# Stopwatch components
+stopwatch_label = Label(stopwatch_tab, font='calibri 15', text='Stopwatch')
+stopwatch_label.pack()
+stopwatch_start = Button(stopwatch_tab, text='Start', command=lambda:stopwatch_func('start'))
+stopwatch_start.pack()
+stopwatch_stop = Button(stopwatch_tab, text='Stop', state='disabled',command=lambda:stopwatch_func('stop'))
+stopwatch_stop.pack()
+stopwatch_reset = Button(stopwatch_tab, text='Reset', state='disabled', command=lambda:stopwatch_func('reset'))
+stopwatch_reset.pack()
+
+# Stopwatch function
+
+def stopwatch_func():
+    start_time = time.time()
+    mins = sec // 60
+    sec = sec % 60
+    hours = mins // 60
+    mins = mins % 60
+    print("Time Lapsed = {0}:{1}:{2}".format(int(hours),int(mins),sec))
+    stopwatch_label.after(1000, stopwatch_func)
+time_convert(time_lapsed)
+# ADD 1 SECOND AND FIND THE WAY HOW TO CONVERT IT TO TICKING CLOCK FROM TICKING SECONDS
 
 
 # Exit button
