@@ -28,22 +28,22 @@ date_label = Label(clock_tab, font = ('calibri', 10))
 date_label.pack()
 
 # Time function
-def time_func():
+'''def time_func():
     time_str = datetime.datetime.now().strftime("%H:%M:%S")
     date_str = datetime.datetime.now().strftime("%d.%m.%Y")
     time_label.config(text = time_str)
     date_label.config(text = date_str)
     root.after(1000, time_func)
+'''
+switch = False
 
-ticking = True
+def start():
+    global switch
+    switch = True
 
-def on_start():
-    global ticking
-    ticking = True
-
-def on_stop():
-    global ticking
-    ticking = False
+def stop():
+    global switch
+    switch = False
 
 # Alarm function
 def alarm_func():
@@ -53,13 +53,13 @@ def alarm_func():
     main_hour, main_minutes, main_seconds = main_time.split(':')
 
     if int(alarm_hour) == int(main_hour) and int(alarm_minutes) == int(main_minutes) and int(alarm_seconds) == int(main_seconds):
-        on_stop()
+        stop()
         alarm_status_label.config(text='Time is up')
         get_alarm_time_entry.config(state='normal')
         set_alarm_button.config(state='normal')
 
 
-    if ticking:
+    if switch:
         alarm_status_label.config(text='Alarm Has Started')
         get_alarm_time_entry.config(state='disabled')
         set_alarm_button.config(state='disabled')
@@ -70,41 +70,60 @@ get_alarm_time_entry = Entry(alarm_tab, font = 'calibri 15')
 get_alarm_time_entry.pack()
 alarm_instructions = Label(alarm_tab, font = 'calibri 10', text = 'Enter alarm time. For instance: 10:11:12')
 alarm_instructions.pack()
-set_alarm_button = Button(alarm_tab, text = 'Set alarm', command=lambda: [on_start(), alarm_func()])
+set_alarm_button = Button(alarm_tab, text = 'Set alarm', command=lambda: [start(), alarm_func()])
 set_alarm_button.pack()
 alarm_status_label = Label(alarm_tab, font = 'calibri 10', text = '')
 alarm_status_label.pack()
 
-# Stopwatch function
+
+# Stopwatch variables
+seconds = 0
+minutes = 0
+hours = 0
+
+# Stopwatch functions
+
+def stopwatch_update():
+            global seconds, minutes, hours
+            seconds += 1
+            if seconds == 60:
+                minutes += 1
+                seconds = 0
+            if minutes == 60:
+                hours += 1
+                minutes = 0
+            
+            hours_string = f'{hours}' if hours > 9 else f'0{hours}'
+            minutes_string = f'{minutes}' if minutes > 9 else f'0{minutes}'
+            seconds_string = f'{seconds}' if seconds > 9 else f'0{seconds}'
+
+            stopwatch_label.config(text = hours_string + ':' + minutes_string + ':' + seconds_string)
+            if switch:
+                stopwatch_label.after(1000, stopwatch_update)
+
 def stopwatch_func(command):
     if command == 'start':
-        start_time = time.time()
+        start()
         stopwatch_start.config(state='disabled')
         stopwatch_stop.config(state='normal')
         stopwatch_reset.config(state='normal')
-        def stopwatch_running():
-            def time_convert(sec):
-                mins = sec // 60
-                sec = sec % 60
-                hours = mins // 60
-                mins = mins % 60
-                return sec, mins, hours
-            end_time = time.time()
-            time_lapsed = end_time - start_time
-            secs = int(time_convert(time_lapsed)[0])
-            mins =  int(time_convert(time_lapsed)[1])
-            hours =  int(time_convert(time_lapsed)[2])
-            stopwatch_label.config(text = "Time lapsed = {0}:{1}:{2}".format(hours,mins,secs))
-            if ticking:
-                stopwatch_label.after(1000, stopwatch_running)
-            return secs
-        stopwatch_running()
+        stopwatch_update()
 
-    if command =='stop':
+
+    if command == 'stop':
         stopwatch_start.config(state='normal')
         stopwatch_stop.config(state='disabled')
-        on_stop()
-        
+        stop()
+
+    if command == 'reset':
+        stopwatch_start.config(state='normal')
+        stopwatch_stop.config(state='disabled')
+        stop()
+        global hours, minutes, seconds
+        hours, minutes, seconds = 0, 0, 0
+        stopwatch_label.config(text='00:00:00')
+
+                
 
 # Stopwatch components
 stopwatch_label = Label(stopwatch_tab, font='calibri 20', text='Stopwatch')
@@ -128,5 +147,98 @@ exit_btn.pack(fill = 'x')
 def exit_func(event):
     root.quit()
 root.bind('<Return>', exit_func)
-time_func()
+
+try:
+    time_func()
+except:
+    pass
+
 mainloop()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# ----------------------------------------------------------------
+
+
+
+# OLD CODE DOESN'T WORK
+
+#Stopwatch variables OLD CODE
+# start_time = None
+# end_time = None
+
+# Stopwatch function OLD CODE
+# def stopwatch_func(command):
+#     if command == 'start':
+#         if switch is False:
+#             start()
+        
+#         global start_time        
+#         if start_time is None:
+#             start_time = time.time()
+
+#         stopwatch_start.config(state='disabled')
+#         stopwatch_stop.config(state='normal')
+#         stopwatch_reset.config(state='normal')
+#         def stopwatch_running():
+#             def time_convert(sec):
+#                 mins = sec // 60
+#                 sec = sec % 60
+#                 hours = mins // 60
+#                 mins = mins % 60
+#                 return sec, mins, hours
+#             end_time = time.time()
+#             time_lapsed = end_time - start_time
+#             secs = int(time_convert(time_lapsed)[0])
+#             mins =  int(time_convert(time_lapsed)[1])
+#             hours =  int(time_convert(time_lapsed)[2])
+#             stopwatch_label.config(text = "Time lapsed = {0}:{1}:{2}".format(hours,mins,secs))
+
+#             if switch is True:
+#                 stopwatch_label.after(1000, stopwatch_running)
+#             return secs
+#         stopwatch_running()
+
+#     if command =='stop':
+#         stopwatch_start.config(state='normal')
+#         stopwatch_stop.config(state='disabled')
+#         stop()
+        
+
+# # Stopwatch components OLD CODE
+# stopwatch_label = Label(stopwatch_tab, font='calibri 20', text='Stopwatch')
+# stopwatch_label.pack()
+# stopwatch_start = Button(stopwatch_tab, text='Start', command=lambda: stopwatch_func('start'))
+# stopwatch_start.pack()
+# stopwatch_stop = Button(stopwatch_tab, text='Stop', state='disabled',command=lambda:stopwatch_func('stop'))
+# stopwatch_stop.pack()
+# stopwatch_reset = Button(stopwatch_tab, text='Reset', state='disabled', command=lambda:stopwatch_func('reset'))
+# stopwatch_reset.pack()
