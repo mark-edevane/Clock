@@ -1,1 +1,1 @@
-Just a digital clock
+Stopwatch, timer, alarm and digital clock.
